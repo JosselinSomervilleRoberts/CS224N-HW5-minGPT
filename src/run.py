@@ -65,8 +65,8 @@ Don't change above here; write your code below
 
 if args.variant == 'vanilla':
     # [part c] Make some model here
-    gpt = model.GPT(mconf)
-    gpt.to(device)
+    model = model.GPT(mconf)
+    model.to(device)
 elif args.variant == 'perceiver':
     # set mconf.perceiver, and mconf.bottleneck_dim parameters appropriately.
     pass # [part g] Make some other model here
@@ -96,9 +96,15 @@ if args.function == 'pretrain':
     # writer=writer 
     
     # Step 1: Pretrain the model
-    corpus = open(args.pretrain_corpus_path, encoding='utf-8').read()
-    pretrain_dataset = dataset.CharCorruptionDataset(corpus, block_size)
-    trainer = trainer.Trainer(gpt, pretrain_dataset, None, mconf)
+    tconf = trainer.TrainerConfig(max_epochs=650,
+                                    batch_size=128,
+                                    learning_rate=args.pretrain_lr,
+                                    lr_decay=True,
+                                    warmup_tokens=512*20,
+                                    final_tokens=200*len(pretrain_dataset)*block_size,
+                                    num_workers=4,
+                                    writer=writer)
+    trainer = trainer.Trainer(model, pretrain_dataset, None, tconf)
     trainer.train()
 
     # Step 2: Save the model parameters
@@ -147,7 +153,15 @@ elif args.function == 'finetune':
     # Step 2: Finetune the model
     corpus = open(args.finetune_corpus_path, encoding='utf-8').read()
     finetune_dataset = dataset.CharCorruptionDataset(corpus, block_size)
-    trainer = trainer.Trainer(gpt, finetune_dataset, None, mconf)
+    tconf = trainer.TrainerConfig(max_epochs=75,
+                                    batch_size=256,
+                                    learning_rate=args.finetune_lr,
+                                    lr_decay=True,
+                                    warmup_tokens=512*20,
+                                    final_tokens=200*len(pretrain_dataset)*block_size,
+                                    num_workers=4,
+                                    writer=writer)
+    trainer = trainer.Trainer(model, finetune_dataset, None, tconf)
     trainer.train()
 
     # Step 3: Save the model parameters
