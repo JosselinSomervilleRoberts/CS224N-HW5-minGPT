@@ -152,6 +152,7 @@ elif args.function == 'finetune':
 
     # Step 2: Finetune the model
     corpus = open(args.finetune_corpus_path, encoding='utf-8').read()
+    print(corpus)
     finetune_dataset = dataset.NameDataset(pretrain_dataset, corpus)
     tconf = trainer.TrainerConfig(max_epochs=75,
                                     batch_size=256,
