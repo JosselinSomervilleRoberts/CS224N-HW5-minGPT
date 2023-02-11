@@ -168,6 +168,7 @@ class CharCorruptionDataset(Dataset):
 
     def __getitem__(self, idx):
         # TODO [part e]: see spec above
+        raise NotImplementedError
         
         # Step 0: Get the document
         document = self.data[idx]
