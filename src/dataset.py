@@ -176,7 +176,6 @@ class CharCorruptionDataset(Dataset):
 
         # Step 1: Truncate the document to a random length
         length = random.randint(4, int(self.block_size * 7/8))
-        print("length: ", length)
         document = document[:length]
 
         # Step 2: Break the document into three substrings

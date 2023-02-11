@@ -167,8 +167,6 @@ elif args.function == 'finetune':
     # Step 3: Save the model parameters
     torch.save(model.state_dict(), args.writing_params_path)
 
-     
-    raise NotImplementedError
 elif args.function == 'evaluate':
     assert args.outputs_path is not None
     assert args.reading_params_path is not None
