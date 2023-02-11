@@ -152,7 +152,7 @@ elif args.function == 'finetune':
 
     # Step 2: Finetune the model
     corpus = open(args.finetune_corpus_path, encoding='utf-8').read()
-    finetune_dataset = dataset.CharCorruptionDataset(corpus, block_size)
+    finetune_dataset = dataset.NameDataset(corpus, block_size)
     tconf = trainer.TrainerConfig(max_epochs=75,
                                     batch_size=256,
                                     learning_rate=args.finetune_lr,
