@@ -151,8 +151,8 @@ elif args.function == 'finetune':
         model.load_state_dict(torch.load(args.reading_params_path))
 
     # Step 2: Finetune the model
-    corpus = open(args.finetune_corpus_path, encoding='utf-8').read()
-    print(corpus)
+    corpus = open(args.finetune_corpus_path).read()
+    print("Corpus =", corpus)
     finetune_dataset = dataset.NameDataset(pretrain_dataset, corpus)
     tconf = trainer.TrainerConfig(max_epochs=75,
                                     batch_size=256,
