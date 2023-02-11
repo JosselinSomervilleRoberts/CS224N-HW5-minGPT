@@ -154,6 +154,9 @@ elif args.function == 'finetune':
     corpus = open(args.finetune_corpus_path).read()
     print("Corpus =", corpus)
     finetune_dataset = dataset.NameDataset(pretrain_dataset, corpus)
+    # to check that the dataset is correctly loaded
+    # print("Get item x =", "".join([str(finetune_dataset.itos[int(c)]) for c in finetune_dataset[0][0]]))
+    # print("Get item y =", "".join([str(finetune_dataset.itos[int(c)]) for c in finetune_dataset[0][1]]))
     tconf = trainer.TrainerConfig(max_epochs=75,
                                     batch_size=256,
                                     learning_rate=args.finetune_lr,
