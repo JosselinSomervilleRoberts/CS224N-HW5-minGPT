@@ -94,7 +94,16 @@ if args.function == 'pretrain':
     # final_tokens=200*len(pretrain_dataset)*block_size
     # num_workers=4
     # writer=writer 
-    raise NotImplementedError
+    
+    # Step 1: Pretrain the model
+    corpus = open(args.pretrain_corpus_path, encoding='utf-8').read()
+    pretrain_dataset = dataset.CharCorruptionDataset(corpus, block_size)
+    trainer = trainer.Trainer(gpt, pretrain_dataset, None, mconf)
+    trainer.train()
+
+    # Step 2: Save the model parameters
+    torch.save(model.state_dict(), args.writing_params_path)
+
 elif args.function == 'finetune':
     assert args.writing_params_path is not None
     assert args.finetune_corpus_path is not None
