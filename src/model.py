@@ -90,7 +90,19 @@ class DownProjectBlock(nn.Module):
         super().__init__()
         ### YOUR CODE HERE
         ### Hint: Copy over the code from Block and make necessary modifications.
-        pass
+        
+        self.ln1 = nn.LayerNorm(config.n_embd)
+        self.ln2 = nn.LayerNorm(config.bottleneck_dim)
+        self.attn = attention.CausalCrossAttention(config)
+        self.mlp = nn.Sequential(
+            nn.Linear(config.n_embd, config.bottleneck_dim),
+            nn.GELU(),
+            nn.Linear(config.bottleneck_dim, config.n_embd),
+            nn.Dropout(config.resid_pdrop),
+        )
+        self.C = nn.Parameter(torch.Tensor(1, config.bottleneck_dim, config.n_embd))
+        nn.init.xavier_uniform_(self.C)
+
         ### END YOUR CODE
 
     def forward(self, x_input):
@@ -100,7 +112,10 @@ class DownProjectBlock(nn.Module):
         ### YOUR CODE HERE
         ### Hint: Copy over the code from Block and make necessary modifications.
         ### Should be around 3-5 lines.
-        pass
+        C = self.ln1(self.C)
+        x = x_input + self.attn(C, self.ln1(x_input))
+        x = x + self.mlp(self.ln2(x))
+        return x
         ### END YOUR CODE
     
     
@@ -115,7 +130,17 @@ class UpProjectBlock(nn.Module):
         super().__init__()
         ### YOUR CODE HERE
         ### Hint: Copy over the code from Block and make necessary modifications.
-        pass
+        self.ln1 = nn.LayerNorm(config.bottleneck_dim)
+        self.ln2 = nn.LayerNorm(config.n_embd)
+        self.attn = attention.CausalCrossAttention(config)
+        self.mlp = nn.Sequential(
+            nn.Linear(config.n_embd, config.bottleneck_dim),
+            nn.GELU(),
+            nn.Linear(config.bottleneck_dim, config.n_embd),
+            nn.Dropout(config.resid_pdrop),
+        )
+        self.Y = nn.Parameter(torch.Tensor(1, config.n_embd, config.bottleneck_dim))
+        nn.init.xavier_uniform_(self.Y)
         ### END YOUR CODE
     
     def forward(self, y, x_input):
@@ -126,7 +151,10 @@ class UpProjectBlock(nn.Module):
         ### YOUR CODE HERE
         ### Hint: Copy over the code from Block and make necessary modifications.
         ### Should be around 3-5 lines.
-        pass
+        Y = self.ln1(self.Y)
+        x = x_input + self.attn(self.ln1(x_input), Y)
+        x = x + self.mlp(self.ln2(x))
+        return x
         ### END YOUR CODE
     
 
