@@ -92,7 +92,7 @@ class DownProjectBlock(nn.Module):
         ### Hint: Copy over the code from Block and make necessary modifications.
         
         self.ln1 = nn.LayerNorm(config.n_embd)
-        self.ln2 = nn.LayerNorm(config.bottleneck_dim)
+        self.ln2 = nn.LayerNorm(config.n_embd)
         self.attn = attention.CausalCrossAttention(config)
         self.mlp = nn.Sequential(
             nn.Linear(config.n_embd, 4 * config.n_embd),
@@ -115,7 +115,7 @@ class DownProjectBlock(nn.Module):
         ### Should be around 3-5 lines.
         print("x_input", x_input.shape)
         print("self.C", self.C.shape)
-        x = self.C + self.attn(x_input, self.ln1(self.C))
+        x = self.C + self.attn(self.ln1(self.C), x_input)
         print("x", x.shape)
         x = x + self.mlp(self.ln2(x))
         return x
