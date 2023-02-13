@@ -92,7 +92,7 @@ class DownProjectBlock(nn.Module):
         ### Hint: Copy over the code from Block and make necessary modifications.
         
         self.ln1 = nn.LayerNorm(config.n_embd)
-        self.ln2 = nn.LayerNorm(config.bottleneck_dim)
+        self.ln2 = nn.LayerNorm(config.n_embd)
         self.attn = attention.CausalCrossAttention(config)
         self.mlp = nn.Sequential(
             nn.Linear(config.bottleneck_dim, config.bottleneck_dim),
