@@ -113,7 +113,10 @@ class DownProjectBlock(nn.Module):
         ### YOUR CODE HERE
         ### Hint: Copy over the code from Block and make necessary modifications.
         ### Should be around 3-5 lines.
+        print("x_input", x_input.shape)
+        print("self.C", self.C.shape)
         x = self.C + self.attn(x_input, self.ln1(self.C))
+        print("x", x.shape)
         x = x + self.mlp(self.ln2(x))
         return x
         ### END YOUR CODE
