@@ -113,10 +113,7 @@ class DownProjectBlock(nn.Module):
         ### YOUR CODE HERE
         ### Hint: Copy over the code from Block and make necessary modifications.
         ### Should be around 3-5 lines.
-        print("x_input", x_input.shape)
-        print("self.C", self.C.shape)
-        x = self.C + self.attn(self.ln1(self.C), x_input)
-        print("x", x.shape)
+        x = self.C + self.attn(x_input, self.ln1(self.C))
         x = x + self.mlp(self.ln2(x))
         return x
         ### END YOUR CODE
@@ -133,7 +130,7 @@ class UpProjectBlock(nn.Module):
         super().__init__()
         ### YOUR CODE HERE
         ### Hint: Copy over the code from Block and make necessary modifications.
-        self.ln1 = nn.LayerNorm(config.bottleneck_dim)
+        self.ln1 = nn.LayerNorm(config.n_embd)
         self.ln2 = nn.LayerNorm(config.n_embd)
         self.attn = attention.CausalCrossAttention(config)
         self.mlp = nn.Sequential(
@@ -142,9 +139,6 @@ class UpProjectBlock(nn.Module):
             nn.Linear(4 * config.n_embd, config.n_embd),
             nn.Dropout(config.resid_pdrop),
         )
-        device = torch.cuda.current_device() if torch.cuda.is_available() else 'cpu'
-        self.Y = nn.Parameter(torch.Tensor(1, config.n_embd, config.bottleneck_dim)).to(device)
-        nn.init.xavier_uniform_(self.Y)
         ### END YOUR CODE
     
     def forward(self, y, x_input):
