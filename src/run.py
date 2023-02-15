@@ -192,7 +192,7 @@ elif args.function == 'evaluate':
             completion = ''.join([pretrain_dataset.itos[int(i)] for i in pred])
             pred = completion.split('⁇')[1]
             predictions.append(pred)
-            print("Prediction =", pred, "Target =", line.split('\t')[1].strip())
+            #print("Prediction =", pred, "Target =", line.split('\t')[1].strip())
             fout.write(pred + '\n')
         total, correct = utils.evaluate_places(args.eval_corpus_path, predictions)
     if total > 0:
