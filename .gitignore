@@ -1,8 +1,5 @@
 # Project 5
 events.*
-vanilla.*
-london.*
-perceiver.*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
