@@ -181,9 +181,9 @@ class CharCorruptionDataset(Dataset):
         # Step 2: Break the document into three substrings
         masked_length = random.randint(int(trunc_length/8), int(3*trunc_length/8))
         masked_start = random.randint(1, trunc_length - masked_length - 1)
-        prefix = document[:masked_start]
-        mask_content = document[masked_start:masked_start+masked_length]
-        suffix = document[masked_start+masked_length:]
+        prefix = document_trunc[:masked_start]
+        mask_content = document_trunc[masked_start:masked_start+masked_length]
+        suffix = document_trunc[masked_start+masked_length:]
 
         # Step 3: Rearrange these substrings into the following form:
         #        [prefix] MASK_CHAR [suffix] MASK_CHAR [masked_content] [pads]
