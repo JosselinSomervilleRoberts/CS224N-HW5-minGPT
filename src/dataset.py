@@ -171,23 +171,23 @@ class CharCorruptionDataset(Dataset):
         
         # Step 0: Get the document
         document = self.data[idx]
-        document = document[:self.block_size]
-        document = document + self.PAD_CHAR * (self.block_size - len(document))
+        # document = document[:self.block_size]
+        # document = document + self.PAD_CHAR * (self.block_size - len(document))
 
         # Step 1: Truncate the document to a random length
-        length = random.randint(4, int(self.block_size * 7/8))
-        document = document[:length]
+        trunc_length = random.randint(4, int(self.block_size * 7/8))
+        document_trunc = document[:trunc_length]
 
         # Step 2: Break the document into three substrings
-        masked_length = random.randint(int(length/8), int(3*length/8))
-        masked_start = random.randint(1, length - masked_length - 1)
+        masked_length = random.randint(int(trunc_length/8), int(3*trunc_length/8))
+        masked_start = random.randint(1, trunc_length - masked_length - 1)
         prefix = document[:masked_start]
         mask_content = document[masked_start:masked_start+masked_length]
         suffix = document[masked_start+masked_length:]
 
         # Step 3: Rearrange these substrings into the following form:
         #        [prefix] MASK_CHAR [suffix] MASK_CHAR [masked_content] [pads]
-        masked_string = prefix + self.MASK_CHAR + suffix + self.MASK_CHAR + mask_content
+        masked_string = prefix + self.MASK_CHAR + suffix + self.MASK_CHAR + mask_content + self.MASK_CHAR
         masked_string = masked_string + self.PAD_CHAR * (self.block_size - len(masked_string))
 
         # Step 4: Define input and output
